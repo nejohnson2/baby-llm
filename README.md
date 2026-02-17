@@ -28,11 +28,18 @@ This script **does not** implement many production LLM requirements (distributed
 
 - Python 3.9+
 - PyTorch
+- tqdm (recommended, for progress bars)
 
 Install PyTorch (example):
 
 ```bash
 pip install torch
+```
+
+With progress bars:
+
+```bash
+pip install torch tqdm
 ```
 
 ## 2.2 Train

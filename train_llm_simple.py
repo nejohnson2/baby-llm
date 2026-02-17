@@ -13,6 +13,13 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+try:
+    from tqdm.auto import tqdm
+except ImportError:
+    def tqdm(iterable, **kwargs):
+        """Fallback no-op progress wrapper when tqdm is unavailable."""
+        return iterable
+
 
 def parse_args():
     """Parse command-line arguments used for training and text generation.
@@ -273,7 +280,7 @@ class GPTLanguageModel(nn.Module):
             torch.Tensor: Extended token IDs of shape
             (batch, time + max_new_tokens).
         """
-        for _ in range(max_new_tokens):
+        for _ in tqdm(range(max_new_tokens), desc="generate", unit="tok", leave=False):
             idx_cond = idx[:, -self.block_size :]
             logits, _ = self(idx_cond)
             logits = logits[:, -1, :]
@@ -295,7 +302,12 @@ def main():
     """
     args = parse_args()
     torch.manual_seed(args.seed)
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    if torch.backends.mps.is_available() and torch.backends.mps.is_built():
+        device = "mps"
+    elif torch.cuda.is_available():
+        device = "cuda"
+    else:
+        device = "cpu"
 
     text = args.corpus.read_text(encoding="utf-8")
     chars = sorted(list(set(text)))
@@ -361,7 +373,12 @@ def main():
         model.eval()
         for split in ["train", "val"]:
             losses = torch.zeros(args.eval_iters)
-            for k in range(args.eval_iters):
+            for k in tqdm(
+                range(args.eval_iters),
+                desc=f"eval-{split}",
+                unit="batch",
+                leave=False,
+            ):
                 xb, yb = get_batch(split)
                 _, loss = model(xb, yb)
                 losses[k] = loss.item()
@@ -380,7 +397,7 @@ def main():
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
 
     print(f"device={device} vocab_size={vocab_size} tokens={len(data):,}")
-    for step in range(args.max_iters):
+    for step in tqdm(range(args.max_iters), desc="train", unit="step"):
         if step % args.eval_interval == 0 or step == args.max_iters - 1:
             losses = estimate_loss(model)
             print(
