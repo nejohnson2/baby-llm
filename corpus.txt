@@ -1,0 +1,33 @@
+The sun rose over the quiet harbor.
+Fishermen checked their nets, and gulls circled above the water.
+By noon, the market was full of voices and laughter.
+
+Maya: Did you finish the report?
+Eli: Almost. I only need to verify the last two numbers.
+Maya: Great. Send it before 4:00 PM.
+
+Daily Log - 2026-02-17
+Weather: Clear, 68F
+Tasks completed: 7
+Bugs fixed: 3
+Open issues: 2
+
+A small robot rolled into the room and said,
+"Hello, team. I can summarize today's meeting in 5 bullet points."
+Everyone stared for a moment, then started asking questions.
+
+Simple recipe:
+1. Boil water.
+2. Add pasta.
+3. Cook for 10 minutes.
+4. Drain and serve.
+
+Key-value examples:
+name=Alex
+role=engineer
+location=Seattle
+favorite_language=Python
+
+This corpus is just plain UTF-8 text.
+You can include newlines, punctuation, numbers, and mixed styles.
+For real training, use a much larger file with the writing style you want.
